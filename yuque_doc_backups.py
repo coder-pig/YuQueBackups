@@ -155,12 +155,16 @@ def fetch_toc_list(repo_id, repo_name):
 
 # 递归访问目录树的测试方法
 def traverse_nodes(node, save_path=""):
-    save_path += "{}{}".format(os.sep, node.node_title)
+    # 格式化节点标题
+    unformat_node_title = "{}".format(node.node_title)
+    format_node_title = unformat_node_title.replace("|", "_").replace("/", "、").replace('"', "'").replace(":", "；")
+    # 追加节点标题到当前路径
+    save_path += "{}{}".format(os.sep, format_node_title)
+    # 生成文件路径
     if node.child_node_list is None or len(node.child_node_list) == 0:
         if node.node_type == "DOC":
             format_repo_name = node.repo_name.replace("|", "_").replace("/", "、").replace('"', "'").replace(":", "；")
-            format_save_path = save_path.replace("|", "_").replace("/", "、").replace('"', "'").replace(":", "；")
-            md_save_path = "{}{}{}{}.md".format(backups_origin_md_dir, os.sep, format_repo_name, format_save_path)
+            md_save_path = "{}{}{}{}.md".format(backups_origin_md_dir, os.sep, format_repo_name, save_path)
             last_sep_index = md_save_path.rfind(os.sep)
             if last_sep_index != -1:
                 save_dir = md_save_path[:last_sep_index]
